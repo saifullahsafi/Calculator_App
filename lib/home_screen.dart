@@ -1,6 +1,7 @@
 import 'package:calculator_app/components/my_button.dart';
 import 'package:calculator_app/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,13 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      Align(alignment: Alignment.bottomRight),
                       Text(
                         UserInput.toString(),
                         style: TextStyle(fontSize: 30, color: Colors.white),
                       ),
+                      SizedBox(height: 10),
                       Text(
-                        UserInput.toString(),
+                        answer.toString(),
                         style: TextStyle(fontSize: 30, color: Colors.white),
                       ),
                     ],
@@ -47,14 +52,31 @@ class _HomeScreenState extends State<HomeScreen> {
                         MyButton(
                           title: 'AC',
                           onPress: () {
-                            print('tap');
+                            UserInput = '';
+                            answer = '';
+                            setState(() {});
                           },
                         ),
-                        MyButton(title: '+/-', onPress: () {}),
-                        MyButton(title: '%', onPress: () {}),
+                        MyButton(
+                          title: '+/-',
+                          onPress: () {
+                            UserInput += '+/-';
+                            setState(() {});
+                          },
+                        ),
+                        MyButton(
+                          title: '%',
+                          onPress: () {
+                            UserInput += '%';
+                            setState(() {});
+                          },
+                        ),
                         MyButton(
                           title: '/',
-                          onPress: () {},
+                          onPress: () {
+                            UserInput += '/';
+                            setState(() {});
+                          },
                           color: Color(0xffffa00a),
                         ),
                       ],
@@ -64,14 +86,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         MyButton(
                           title: '7',
                           onPress: () {
-                            print('tap');
+                            UserInput += '7';
+                            setState(() {});
                           },
                         ),
-                        MyButton(title: '8', onPress: () {}),
-                        MyButton(title: '9', onPress: () {}),
+                        MyButton(
+                          title: '8',
+                          onPress: () {
+                            UserInput += '8';
+                            setState(() {});
+                          },
+                        ),
+                        MyButton(
+                          title: '9',
+                          onPress: () {
+                            UserInput += '9';
+                            setState(() {});
+                          },
+                        ),
                         MyButton(
                           title: 'x',
-                          onPress: () {},
+                          onPress: () {
+                            UserInput += 'x';
+                            setState(() {});
+                          },
                           color: Color(0xffffa00a),
                         ),
                       ],
@@ -81,14 +119,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         MyButton(
                           title: '4',
                           onPress: () {
-                            print('tap');
+                            UserInput += '4';
+                            setState(() {});
                           },
                         ),
-                        MyButton(title: '5', onPress: () {}),
-                        MyButton(title: '6', onPress: () {}),
+                        MyButton(
+                          title: '5',
+                          onPress: () {
+                            UserInput += '5';
+                            setState(() {});
+                          },
+                        ),
+                        MyButton(
+                          title: '6',
+                          onPress: () {
+                            UserInput += '6';
+                            setState(() {});
+                          },
+                        ),
                         MyButton(
                           title: '-',
-                          onPress: () {},
+                          onPress: () {
+                            UserInput += '-';
+                            setState(() {});
+                          },
                           color: Color(0xffffa00a),
                         ),
                       ],
@@ -98,14 +152,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         MyButton(
                           title: '1',
                           onPress: () {
-                            print('tap');
+                            UserInput += '1';
+                            setState(() {});
                           },
                         ),
-                        MyButton(title: '2', onPress: () {}),
-                        MyButton(title: '3', onPress: () {}),
+                        MyButton(
+                          title: '2',
+                          onPress: () {
+                            UserInput += '2';
+                            setState(() {});
+                          },
+                        ),
+                        MyButton(
+                          title: '3',
+                          onPress: () {
+                            UserInput += '3';
+                            setState(() {});
+                          },
+                        ),
                         MyButton(
                           title: '+',
-                          onPress: () {},
+                          onPress: () {
+                            UserInput += '+';
+                            setState(() {});
+                          },
                           color: Color(0xffffa00a),
                         ),
                       ],
@@ -115,14 +185,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         MyButton(
                           title: '0',
                           onPress: () {
-                            print('tap');
+                            UserInput += '0';
+                            setState(() {});
                           },
                         ),
-                        MyButton(title: '.', onPress: () {}),
-                        MyButton(title: 'DEL', onPress: () {}),
+                        MyButton(
+                          title: '.',
+                          onPress: () {
+                            UserInput += '.';
+                            setState(() {});
+                          },
+                        ),
+                        MyButton(
+                          title: 'DEL',
+                          onPress: () {
+                            UserInput = UserInput.substring(
+                              0,
+                              UserInput.length - 1,
+                            );
+                            setState(() {});
+                          },
+                        ),
                         MyButton(
                           title: '=',
-                          onPress: () {},
+                          onPress: () {
+                            equalPress();
+                            setState(() {});
+                          },
                           color: Color(0xffffa00a),
                         ),
                       ],
@@ -135,5 +224,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void equalPress() {
+    String finalUserInput = UserInput.replaceAll('x', '*');
+    GrammarParser p = GrammarParser();
+    Expression expression = p.parse(finalUserInput);
+    ContextModel contextModel = ContextModel();
+    double eval = expression.evaluate(EvaluationType.REAL, contextModel);
+    answer = eval.toString();
   }
 }
